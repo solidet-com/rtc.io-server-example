@@ -1,4 +1,4 @@
-import { Server, addDefaultListeners } from "rtc.io-server";
+import { Server, addDefaultListeners } from "srtc.io";
 
 const server = new Server({
   cors: {
