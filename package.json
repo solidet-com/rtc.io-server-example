@@ -1,0 +1,25 @@
+{
+  "name": "rtc.io-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "nodemon --watch '*/.ts' --exec ts-node ./index.ts"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "socket.io": "^4.7.3",
+    "srtc.io": "^1.0.1",
+    "typescript": "^5.3.3",
+    "werift": "^0.19.0"
+  },
+  "devDependencies": {
+    "ts-node": "^10.9.2"
+  }
+}
