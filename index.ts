@@ -44,9 +44,10 @@ server.on("connection", (socket) => {
     socket.to(message.roomId).emit("chat-message", message);
   });
 
-  socket.on("disconnect", () => {
-    console.log("disconnect", socket.id);
-    Array.from(socket.rooms.values()).forEach((roomId) => {
+  socket.on("disconnecting", () => {
+    console.log("disconnecting", socket.id);
+    socket.rooms.forEach((roomId) => {
+      if (roomId === socket.id) return;
       socket.to(roomId).emit("user-disconnected", { id: socket.id });
     });
   });
