@@ -46,7 +46,8 @@ server.on("connection", (socket) => {
 
   socket.on("disconnect", () => {
     console.log("disconnect", socket.id);
-    const roomId = Array.from(socket.rooms.values())[1];
-    socket.to(roomId).emit("user-disconnected", { id: socket.id });
+    Array.from(socket.rooms.values()).forEach((roomId) => {
+      socket.to(roomId).emit("user-disconnected", { id: socket.id });
+    });
   });
 });
