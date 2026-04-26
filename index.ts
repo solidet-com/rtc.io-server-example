@@ -44,6 +44,11 @@ server.on("connection", (socket) => {
     socket.to(message.roomId).emit("chat-message", message);
   });
 
+  socket.on("media-state", (data) => {
+    if (!data?.roomId) return;
+    socket.to(data.roomId).emit("media-state", data);
+  });
+
   socket.on("disconnecting", () => {
     console.log("disconnecting", socket.id);
     socket.rooms.forEach((roomId) => {
