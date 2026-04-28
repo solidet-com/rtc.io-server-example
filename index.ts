@@ -30,6 +30,31 @@ server.on("connection", (socket) => {
     }
   });
 
+
+  socket.on("check-room", (payload: { roomId?: string; password?: string }) => {
+    const roomId = payload?.roomId;
+    if (!roomId || typeof roomId !== "string") {
+      socket.emit("join-error", { reason: "invalid-room", roomId });
+      return;
+    }
+    const supplied = trimPassword(payload?.password);
+    const occupants = server.sockets.adapter.rooms.get(roomId);
+    const hasOccupants = !!(occupants && occupants.size > 0);
+    const stored = roomPasswords.get(roomId) ?? "";
+    if (hasOccupants && stored && supplied !== stored) {
+      socket.emit("join-error", {
+        reason: supplied ? "wrong-password" : "password-required",
+        roomId,
+      });
+      return;
+    }
+
+    socket.emit("room-check-ok", {
+      roomId,
+      passwordRequired: hasOccupants && !!stored,
+    });
+  });
+
   socket.on("join-room", (payload: { name: string; roomId: string; password?: string }) => {
     const { name, roomId } = payload ?? ({} as any);
     const supplied = trimPassword(payload?.password);
