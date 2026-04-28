@@ -130,6 +130,11 @@ server.on("connection", (socket) => {
   socket.on("disconnecting", () => {
     console.log("disconnecting", socket.id);
     lastMediaState.delete(socket.id);
+    // The rtc.io-server core emits the `#rtcio:peer-left` notification for us
+    // (see addDefaultListeners). We only handle app-level cleanup here:
+    // the per-room password registry and the legacy `user-disconnected`
+    // event that older app code (rtcio-web, server.rtcio.dev consumers)
+    // still listens for at the application layer.
     socket.rooms.forEach((roomId) => {
       if (roomId === socket.id) return;
       socket.to(roomId).emit("user-disconnected", { id: socket.id });
