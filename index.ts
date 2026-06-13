@@ -1,8 +1,22 @@
 import { Server, RtcioEvents } from "rtc.io-server";
 
+// Demo/public-server config: open CORS so any origin can connect to the live
+// demo. For a real deployment, restrict `origin` to your app's domains and put
+// authentication in front of join-room.
+//
+// connectionStateRecovery keeps a socket's id and room membership across short
+// signaling drops (network blip, mobile data ↔ wifi handoff, brief server
+// hiccup). Without it the socket reconnects with a FRESH id, existing peers see
+// it as a brand-new user, and you get duplicate tiles + a stuck renegotiation
+// (the old peer answers on its old connection, so the new one never completes).
+// With it, a quick reconnect is transparent: same id, same rooms, peers intact.
 const server = new Server({
   cors: {
     origin: "*",
+  },
+  connectionStateRecovery: {
+    maxDisconnectionDuration: 2 * 60 * 1000, // recover if back within 2 min
+    skipMiddlewares: true,
   },
 });
 
@@ -73,7 +87,7 @@ server.on("connection", (socket) => {
       // when the room was first occupied.
       if (stored && supplied !== stored) {
         socket.emit("join-error", {
-          reason: stored ? "wrong-password" : "password-required",
+          reason: supplied ? "wrong-password" : "password-required",
           roomId,
         });
         return;

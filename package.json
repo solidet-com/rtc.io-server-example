@@ -9,12 +9,12 @@
   "scripts": {
     "build": "tsc",
     "start": "node dist/index.js",
-    "dev": "nodemon --watch '*/.ts' --exec ts-node ./index.ts"
+    "dev": "nodemon --watch . --ext ts --exec ts-node ./index.ts"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "rtc.io-server": "^1.2.0",
+    "rtc.io-server": "^1.2.1",
     "socket.io": "^4.7.3",
     "typescript": "^5.3.3"
   },
